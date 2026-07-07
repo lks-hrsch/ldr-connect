@@ -62,7 +62,7 @@ See [mqtt-topics.md](../mqtt-topics.md) for the full contract.
   exists, default to warm white at low brightness.
 - **Brownout protection:** the brightness cap doubles as the primary mitigation — see
   [#015 Power Metering](015-power-metering.md) for the runtime VBUS-sag response.
-- **Quiet hours:** event-driven light (notification overlays, celebrations) is
-  suppressed; explicit base-state commands (app or HA) and local user-initiated feedback
-  still play — the full rule is owned by
+- **Quiet hours:** the lamp goes dark for all animations — notification overlays,
+  celebrations, and local feedback blinks alike; the only exception is an explicit
+  base-state command (app or HA). The full rule is owned by
   [#010 Quiet Hours / Night Mode](010-quiet-hours.md).

@@ -26,17 +26,19 @@ beyond night mode.
    ([#009](009-button-mapping.md)), flips quiet mode immediately (guests, sick day, nap).
    The manual state holds until the **next** scheduled boundary, then the schedule
    resumes. The app can toggle equivalently via config.
-3. **While quiet:** the lamp suppresses all *event-driven* light — notification overlays
-   ([#005 RGB Lamp](005-rgb-lamp.md)), celebrations. Two things still play: explicit
-   base-state commands from the app or Home Assistant (a deliberately switched-on night
-   light is user intent, not a notification — see
-   [#018 Home Assistant Integration](018-home-assistant.md)), and local, user-initiated
-   feedback — the send-confirmation blink ([#008](008-interactions.md)), the
-   factory-reset hold ramp ([#016](016-factory-reset.md)), the HA identify animation
-   ([#018](018-home-assistant.md)) — each a direct response to a deliberate action by
-   someone present. The OLED is put to sleep (no idle animation — burn-in protection).
-   The e-ink keeps updating (non-emissive) but reduces to hourly clock refreshes. Buttons
-   remain fully functional — **sending** gestures at night is allowed and unaffected.
+3. **While quiet, everything sleeps except the e-ink.** The lamp goes dark for *all*
+   animations — notification overlays ([#005 RGB Lamp](005-rgb-lamp.md)), celebrations,
+   and local feedback alike: the send-confirmation blink ([#008](008-interactions.md)),
+   the factory-reset hold ramp ([#016](016-factory-reset.md)), and the HA identify
+   animation ([#018](018-home-assistant.md)) are all suppressed; where feedback is
+   needed, the e-ink carries it instead. The single exception is an explicit base-state
+   command from the app or Home Assistant (a deliberately switched-on night light is
+   user intent, not a notification — see
+   [#018 Home Assistant Integration](018-home-assistant.md)). The OLED is put to sleep
+   (no idle animation — burn-in protection). The e-ink keeps updating but reduces to
+   hourly clock refreshes — it is non-emissive and the chosen panel has no backlight
+   ([hardware.md](../hardware.md)), so it emits no light at night. Buttons remain fully
+   functional — **sending** gestures at night is allowed and unaffected.
 4. **Queueing instead of dropping:** incoming interactions
    ([#008 Interactions](008-interactions.md)) are counted per type and persisted to NVS
    (`{"hug":2,"kiss":1}`, plus the `ts` of the last one). Image messages

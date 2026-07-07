@@ -20,20 +20,17 @@ Two paths reach the same end state.
    ([#001 Setup & Provisioning](001-setup.md), SoftAP). **This is the canonical spec for
    the mechanism summarized in [#001](001-setup.md).** The hold is detected below the
    button-mapping layer, so it works even while an image takeover
-   ([#012 Image Messages](012-image-message.md)) has captured normal presses; the ramp
-   plays even during quiet hours (user-initiated feedback,
-   [#010 Quiet Hours](010-quiet-hours.md)).
+   ([#012 Image Messages](012-image-message.md)) has captured normal presses. During
+   quiet hours the lamp stays dark ([#010 Quiet Hours](010-quiet-hours.md)) — the hold
+   progress is shown on the e-ink instead.
 2. **(B) App path — guided:** reachable **only** via the local mDNS management channel
    ([#001](001-setup.md)), **never** via MQTT. Rationale: no remote-wipe path shall
    exist even if broker credentials or the account are compromised — physical LAN
    proximity is a deliberate requirement. Flow: the app discovers the gadget → sends an
    AEAD-authenticated reset request (**AAD = the request path**, key material per
    [#002 Security & Pairing](002-security.md)) → the app shows explicit confirmation
-   listing the consequences → the gadget replies OK — and, if Home Assistant integration
-   is enabled, first removes itself from HA (empty retained payloads to its discovery
-   configs and `ha/*/state` topics, the same mechanism as switching `ha.enabled` off —
-   see [#018 Home Assistant Integration](018-home-assistant.md)) — then wipes and reboots
-   into setup mode.
+   listing the consequences → the gadget replies OK, then wipes and reboots into setup
+   mode.
 3. **(B) Guided cleanup:** after the wipe, the app publishes **zero-length retained**
    messages to all of the OWN person's retained topics — `presence`, `status`, `env`,
    `power`, `lamp`, `config`, `countdown`, `image`, `ota/offer` — clearing stale retained
@@ -57,7 +54,8 @@ messages to the topics listed above.
 ## Hardware
 
 - Button 1 — 10 s hold triggers path A.
-- RGB lamp — hold-progress color ramp; brief red flash on wipe.
+- RGB lamp — hold-progress color ramp; brief red flash on wipe (e-ink progress instead
+  during quiet hours, [#010](010-quiet-hours.md)).
 - e-ink — shows setup instructions after reboot ([#001](001-setup.md)).
 
 See [hardware.md](../hardware.md).
@@ -73,9 +71,9 @@ See [hardware.md](../hardware.md).
 - **Partner's stale retained data still shows the wiped person until cleanup runs:** the
   guided flow (path B) handles this; the hardware path (path A) leaves stale retained
   state on the broker — a documented known limitation.
-- **Home Assistant residue on the hardware path:** path A cannot remove the device from
-  HA (retained discovery configs and `ha/*/state` topics stay at the broker) — HA shows
-  it as unavailable until removed manually there; path B clears them before the wipe, as
-  above ([#018 Home Assistant Integration](018-home-assistant.md)).
+- **Home Assistant residue:** neither path removes the device from HA — the retained
+  discovery configs and `ha/*/state` topics stay at the broker, and HA shows the device
+  as unavailable until it is removed manually there. Deliberate: factory reset carries
+  no HA-specific logic ([#018 Home Assistant Integration](018-home-assistant.md)).
 - **Re-provisioning after reset:** requires either a new key ceremony or a re-push of
   existing keys ([#002 Security & Pairing](002-security.md)).

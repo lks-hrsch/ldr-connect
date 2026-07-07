@@ -15,7 +15,9 @@ The emotional heart of the project; inspired by friendship lamps and Bond Touch.
    [#009 Button Mapping](009-button-mapping.md)) or tap in the app → publish
    `ldr/{you}/interaction` `{"type":"hug","ts":…}`, at QoS 1, **not retained** — a
    gesture is transient by design.
-2. You get local feedback (a short lamp blink) on publish confirmation.
+2. You get local feedback (a short lamp blink) on publish confirmation. During your own
+   quiet hours ([#010 Quiet Hours](010-quiet-hours.md)) the blink is suppressed — a
+   brief sent-confirmation line on the e-ink acknowledges it instead.
 3. **Receiver side:** the partner's gadget plays a type-specific lamp animation (e.g. a
    warm slow pulse for hug, a quick double flash for kiss — exact effects defined in
    [#005 RGB Lamp](005-rgb-lamp.md)) and updates a "last gesture: hug, 12:34" line on its

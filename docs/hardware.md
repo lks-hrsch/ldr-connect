@@ -32,7 +32,9 @@ the gadget** — heart rate comes from the paired iPhone via Apple Watch (see
 - **e-ink**: clock updates at most once per minute; connection quality is shown coarsely.
   Mix partial refreshes with periodic full refreshes to avoid ghosting, and put the panel
   to sleep between updates. During quiet hours the cadence drops to hourly (see
-  [features/010-quiet-hours.md](features/010-quiet-hours.md)).
+  [features/010-quiet-hours.md](features/010-quiet-hours.md)). The panel is non-emissive
+  and has no backlight or frontlight — it emits no light at night, which is why it is
+  the only display that stays active during quiet hours.
 - **OLED**: drives the heartbeat animation — see
   [architecture.md § Display split](architecture.md#display-split) for why this content
   is split across the two displays. Sleeps after at most 10 min of idle animation, and

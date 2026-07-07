@@ -73,12 +73,12 @@ not an accident: HA gets a curated plaintext surface, never the intimate payload
    app's lamp topic ([#005 RGB Lamp](005-rgb-lamp.md)) — last-write-wins by `ts`; the
    gadget mirrors every base-state change back to `ha/lamp/state` so the app and HA stay
    consistent. Notification overlays still temporarily override the base state.
-   **Quiet-hours amendment** (cross-cutting, also documented in
-   [#010 Quiet Hours](010-quiet-hours.md)): quiet hours suppress *event-driven* light
-   (notification overlays, celebrations), but explicit base-state light commands from the
-   app or HA are honored — a deliberately switched-on night light is user intent, not a
-   notification. This enables the night-light use case: an HA automation can turn the
-   lamp on warm/dim at bedtime, off in the morning, or motion-triggered.
+   **Quiet-hours amendment** (cross-cutting, owned by
+   [#010 Quiet Hours](010-quiet-hours.md)): during quiet hours the lamp is dark for all
+   animations; the single exception is an explicit base-state light command from the app
+   or HA — a deliberately switched-on night light is user intent, not a notification.
+   This enables the night-light use case: an HA automation can turn the lamp on warm/dim
+   at bedtime, off in the morning, or motion-triggered.
 7. **HA → gadget context:** HA automations publish `{"home":true,"ts":…}` to
    `ldr/{you}/ha/presence/set` (sourced from an HA person entity / phone WiFi presence).
    The gadget maps this to its own auto-status — setting mood `"home"`/`"away"` on the
@@ -125,13 +125,14 @@ No new hardware. WS2812 lamp (light entity, identify animation); INA226/INA219
 - **Energy counter across a factory reset** ([#016 Factory Reset](016-factory-reset.md)):
   the counter is wiped; HA sees this as the start of a new `total_increasing` cycle,
   which it handles natively.
-- **Factory reset removal:** on the app-path reset, a gadget with `ha.enabled` removes
-  itself from HA before wiping (empty retained payloads to its discovery configs and
-  `ha/*/state` topics — the same mechanism as switching `ha.enabled` off). The hardware
-  path can't do this — HA shows the device as unavailable until removed manually there
-  ([#016 Factory Reset](016-factory-reset.md)).
-- **Identify pressed during quiet hours:** honored — it is an explicit command, the same
-  rule as base-state light ([#010 Quiet Hours](010-quiet-hours.md)).
+- **Factory reset residue:** a factory reset
+  ([#016 Factory Reset](016-factory-reset.md)) does **not** remove the device from HA on
+  either path — the retained discovery configs and `ha/*/state` topics stay at the
+  broker, and HA shows the device as unavailable until it is removed manually there (or
+  a re-provisioned gadget with `ha.enabled` republishes them).
+- **Identify pressed during quiet hours:** suppressed — quiet means dark; only explicit
+  base-state light commands are exempt ([#010 Quiet Hours](010-quiet-hours.md)). Press
+  it again outside quiet hours.
 - **Conflicting lamp writes, app vs. HA:** last-write-wins by `ts`; both are mirrored to
   `ha/lamp/state`.
 - **Quiet mode toggled simultaneously via button and HA switch:** same state machine,
